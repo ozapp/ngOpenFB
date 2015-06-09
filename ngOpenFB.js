@@ -370,6 +370,27 @@
             return q.reject();
           });
           return q.promise;
+        },
+
+        /*
+         * Logout facebook
+        #
+         * @returns promise
+         */        
+        logout: function(){
+          var q;
+          q = $q.defer();
+          $http.get('https://m.facebook.com/settings/').success(function (pageContent) {
+            var hIndex = pageContent.indexOf('logout.php?h=');
+            //console.log('pageContent',hIndex,typeof pageContent ,  );
+            var logoutUrl = 'https://www.facebook.com/' + pageContent.substr(hIndex,40);
+            logoutUrl = logoutUrl.split('&')[0];
+            $http.get(logoutUrl).success(function () {
+               $window.sessionStorage.clear();
+               return q.resolve();
+            });
+          });
+          return q.promise;       
         }
       };
     }
